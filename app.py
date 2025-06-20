@@ -16,7 +16,13 @@ YDL_OPTS_BASE = {
     'format': 'bestaudio/best',
     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(id)s.%(ext)s'),
     'noplaylist': True,
-    'keepvideo': False, 
+    'keepvideo': False,
+    # "Disfraz" para simular un navegador real y evitar bloqueos de YouTube
+    'http_headers': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+    }
 }
 
 @app.route('/')
@@ -55,13 +61,9 @@ def process_video():
             mp3_filename = f"{video_id}.mp3"
 
             # --- LÓGICA PARA EL NUEVO NOMBRE DE ARCHIVO ---
-            # Limpiamos el título de caracteres no válidos para nombres de archivo
             safe_title = re.sub(r'[\\/*?:"<>|]', "", video_title)
-            # Creamos el nombre de archivo amigable
             friendly_filename = f"EasyMP3Downloader - {safe_title}.mp3"
-            # Codificamos el nombre para que sea seguro en una URL
             encoded_filename = quote(friendly_filename)
-            # Creamos la URL de descarga con el nombre amigable como parámetro
             download_url_with_name = f"/downloads/{mp3_filename}?filename={encoded_filename}"
             
             return jsonify({
@@ -77,9 +79,7 @@ def process_video():
 
 @app.route('/downloads/<path:filename>')
 def serve_download(filename):
-    # Obtenemos el nombre amigable de los parámetros de la URL
     download_name = request.args.get('filename', filename)
-    # Enviamos el archivo con el nombre personalizado
     return send_from_directory(
         DOWNLOAD_FOLDER, 
         filename, 
