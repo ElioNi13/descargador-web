@@ -18,14 +18,9 @@ YDL_OPTS_BASE = {
     'noplaylist': True,
     'keepvideo': False,
     'socket_timeout': 60,
-    'rm_cachedir': True, # Limpiar cookies para cada descarga
-    'force_ipv4': True, # A menudo es menos restringido
-    # --- Disfraz Final: Simular un cliente de TV ---
-    # Esto a veces evita los bloqueos más estrictos de YouTube
-    'youtube_client': 'TV_EMBED',
-    'http_headers': {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-    },
+    # Limpiamos todos los "disfraces" para hacer una petición lo más simple posible,
+    # como último recurso contra los bloqueos.
+    'rm_cachedir': True,
 }
 
 @app.route('/')
