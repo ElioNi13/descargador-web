@@ -23,13 +23,9 @@ YDL_OPTS_BASE = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
         'Accept-Language': 'en-US,en;q=0.5',
     },
-    # Forzar el uso de una conexión IPv4, que a menudo es menos restringida
     'force_ipv4': True,
-    # Estrategia para extraer información del reproductor web si la normal falla
-    'youtube_include_dash_manifest': True,
-    'youtube_skip_dash_manifest': False,
-    # Simular que la petición viene de un cliente móvil, a veces evita bloqueos
-    'youtube_client': 'android',
+    # Limpiar cookies para cada descarga para parecer un visitante nuevo
+    'rm_cachedir': True,
 }
 
 @app.route('/')
