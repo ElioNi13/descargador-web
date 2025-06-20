@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyMP3Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-pattern { background-color: #111827; background-image: radial-gradient(circle at top left, rgba(59, 130, 246, 0.2), transparent 40%), radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.2), transparent 40%); }
+        .card-glow { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 80px rgba(59, 130, 246, 0.3) inset; }
+        .fade-in { animation: fadeIn 0.7s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .quality-selector { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        
+        .fa-spin-custom { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .tab-btn.active {
+            background-color: #3b82f6; /* bg-blue-600 */
+            color: white;
+            border-color: #3b82f6;
+        }
+        .prose-custom p { margin-bottom: 1em; }
+        .prose-custom h2 { margin-bottom: 0.5em; }
+        .prose-custom h3 { margin-top: 1.5em; margin-bottom: 0.5em; }
+    </style>
+</head>
+<body class="bg-pattern text-white min-h-screen flex items-center justify-center p-4 transition-all duration-500">
+
+    <div id="main-card" class="w-full max-w-2xl bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-6 md:p-10 card-glow transition-all duration-500">
+        
+        <div class="mb-8 border-b border-gray-700">
+            <nav class="-mb-px flex space-x-2 sm:space-x-4" aria-label="Tabs">
+                <button id="downloader-tab" class="tab-btn active whitespace-nowrap py-3 px-1 sm:px-4 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-400 hover:text-white hover:border-gray-300 rounded-t-lg">Inicio</button>
+                <button id="about-tab" class="tab-btn whitespace-nowrap py-3 px-1 sm:px-4 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-400 hover:text-white hover:border-gray-300 rounded-t-lg">Acerca de</button>
+                <button id="contact-tab" class="tab-btn whitespace-nowrap py-3 px-1 sm:px-4 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-400 hover:text-white hover:border-gray-300 rounded-t-lg">Contacto</button>
+                <button id="copyright-tab" class="tab-btn whitespace-nowrap py-3 px-1 sm:px-4 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-400 hover:text-white hover:border-gray-300 rounded-t-lg">Copyright</button>
+                <button id="privacy-tab" class="tab-btn whitespace-nowrap py-3 px-1 sm:px-4 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-400 hover:text-white hover:border-gray-300 rounded-t-lg">Privacidad</button>
+            </nav>
+        </div>
+
+        <div id="downloader-content" class="tab-content">
+            <div id="search-section">
+                <div class="text-center mb-8">
+                    <i class="fas fa-compact-disc text-blue-400 text-5xl mb-4 animate-spin [animation-duration:5s]"></i>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">EasyMP3Downloader</h1>
+                    <p class="text-gray-400 mt-2">Transforma videos de YouTube en MP3 al instante.</p>
+                </div>
+
+                <form id="download-form" class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <i class="fas fa-link absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                        <input type="url" id="youtube-url" placeholder="Pega aquí la URL del video de YouTube..." class="w-full bg-gray-900/70 border border-gray-600 rounded-lg py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder-gray-500 text-white">
+                    </div>
+                    <button type="submit" id="submit-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105">
+                        <i id="button-icon" class="fas fa-search"></i>
+                        <span id="button-text">Buscar</span>
+                    </button>
+                </form>
+            </div>
+            <div id="result-area" class="mt-8 text-center"></div>
+        </div>
+
+        <div id="about-content" class="tab-content hidden prose-custom prose prose-invert text-gray-300">
+            <h2 class="text-2xl font-bold text-white">Sobre EasyMP3Downloader</h2>
+            <p>Bienvenido a EasyMP3Downloader. Nuestra misión es proporcionar una herramienta sencilla y eficiente para que los usuarios puedan crear copias de seguridad de audio de contenido público en formato MP3, para su uso personal y offline.</p>
+            <p>Esta aplicación te permite convertir y descargar el audio de tus videos favoritos de YouTube de una manera rápida y directa. Simplemente pega la URL del video, elige la calidad que prefieras, y nuestro sistema se encargará del resto.</p>
+            <h3 class="text-xl font-semibold text-white">Uso Responsable</h3>
+            <p>Es importante recordar que el contenido en YouTube está protegido por derechos de autor. Esta herramienta está diseñada para permitir a los usuarios acceder a contenido que ya poseen o que tiene licencias que permiten su descarga para uso personal.</p>
+            <p>Respeta siempre a los creadores de contenido. Si te gusta un artista, apóyalo comprando su música y merchandising a través de canales oficiales.</p>
+        </div>
+        
+        <div id="contact-content" class="tab-content hidden prose-custom prose prose-invert text-gray-300">
+            <h2 class="text-2xl font-bold text-white">Contacto</h2>
+            <p>Si tienes alguna pregunta, sugerencia o necesitas reportar un problema, no dudes en escribirnos.</p>
+            <p>Puedes contactarnos a través de la siguiente dirección de correo electrónico:</p>
+            <p><a href="mailto:soporte.easymp3@example.com" class="text-blue-400 hover:text-blue-300">soporte.easymp3@example.com</a></p>
+        </div>
+        
+        <div id="copyright-content" class="tab-content hidden prose-custom prose prose-invert text-gray-300">
+            <h2 class="text-2xl font-bold text-white">Derechos de Autor</h2>
+            <p>&copy; 2025 EasyMP3Downloader. Todos los derechos reservados.</p>
+            <p>El diseño, código fuente, logotipos y contenido de esta página web son propiedad exclusiva de EasyMP3Downloader y están protegidos por las leyes de propiedad intelectual.</p>
+            <p>Queda prohibida la reproducción total o parcial de este sitio web sin el permiso expreso y por escrito del propietario. El uso no autorizado puede constituir una violación de las leyes de derechos de autor y otras leyes aplicables.</p>
+        </div>
+
+        <div id="privacy-content" class="tab-content hidden prose-custom prose prose-invert text-gray-300">
+            <h2 class="text-2xl font-bold text-white">Política de Privacidad</h2>
+            <p>En EasyMP3Downloader, tu privacidad es nuestra prioridad. Esta política detalla cómo manejamos la información.</p>
+            <h3 class="text-xl font-semibold text-white">Información que No Recopilamos</h3>
+            <p>No recopilamos, almacenamos ni compartimos ninguna información personal identificable. No utilizamos cookies de seguimiento ni solicitamos datos personales como nombre, correo electrónico o dirección IP.</p>
+             <h3 class="text-xl font-semibold text-white">Uso de la Herramienta</h3>
+            <p>Las URLs que introduces se utilizan únicamente para procesar tu solicitud de conversión en tiempo real y no se almacenan en nuestros servidores. Los archivos convertidos se guardan temporalmente en el servidor solo durante el tiempo necesario para que completes la descarga y luego se eliminan automáticamente.</p>
+            <p>No mantenemos registros de las descargas ni del contenido que procesas.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const downloadForm = document.getElementById('download-form');
+            const urlInput = document.getElementById('youtube-url');
+            const resultArea = document.getElementById('result-area');
+            const submitButton = document.getElementById('submit-button');
+            const buttonIcon = document.getElementById('button-icon');
+            const buttonText = document.getElementById('button-text');
+
+            // Lógica para Pestañas
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+
+                    button.classList.add('active');
+                    const contentId = button.id.replace('-tab', '-content');
+                    document.getElementById(contentId).classList.remove('hidden');
+                });
+            });
+
+            downloadForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const quality = document.getElementById('quality-selector')?.value || '192';
+                showInfoAndDownload(quality);
+            });
+
+            async function showInfoAndDownload(quality) {
+                const youtubeUrl = urlInput.value.trim();
+                if (!youtubeUrl) {
+                    showError("Por favor, introduce una URL.");
+                    return;
+                }
+                showLoading("Procesando, por favor espera...");
+                try {
+                    const response = await fetch('/api/process', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url: youtubeUrl, quality: quality }),
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        showSuccess(result);
+                    } else {
+                        showError(result.error || 'Ocurrió un error desconocido.');
+                    }
+                } catch (error) {
+                    showError('No se pudo conectar con el servidor.');
+                }
+            }
+
+            function showLoading(message) {
+                resultArea.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-gray-400 p-4">
+                        <i class="fas fa-spinner fa-spin-custom text-4xl text-blue-400"></i>
+                        <p class="mt-3 text-lg">${message}</p>
+                    </div>
+                `;
+                resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                submitButton.disabled = true;
+                buttonText.textContent = 'Procesando...';
+                buttonIcon.className = 'fas fa-spinner fa-spin-custom';
+            }
+
+            function resetToSearch() {
+                resultArea.innerHTML = '';
+                submitButton.disabled = false;
+                urlInput.value = '';
+                buttonText.textContent = 'Buscar';
+                buttonIcon.className = 'fas fa-search';
+            }
+
+            function showError(message) {
+                resultArea.innerHTML = `
+                    <div class="fade-in bg-red-900/30 border border-red-500/50 text-red-300 p-4 rounded-lg">
+                        <p class="font-semibold">Error: ${message}</p>
+                        <button onclick="resetToSearch()" class="mt-3 bg-red-500/50 hover:bg-red-500/80 px-4 py-1 rounded-md text-white">Intentar de nuevo</button>
+                    </div>`;
+                resetFormStateButKeepInput();
+            }
+
+            function showSuccess(data) {
+                const { download_url, title, uploader, thumbnail, duration } = data;
+                resultArea.innerHTML = `
+                    <div class="fade-in bg-gray-900/50 border border-gray-700 rounded-lg p-5 text-left flex flex-col sm:flex-row items-center gap-5">
+                        <div class="w-full sm:w-32 h-32 sm:h-auto flex-shrink-0">
+                             <img src="${thumbnail}" alt="Miniatura del video" class="w-full h-full object-cover rounded-md shadow-lg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/1e293b/93c5fd?text=Preview';">
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-lg text-white line-clamp-2">${title}</h3>
+                            <p class="text-sm text-gray-400">${uploader}</p>
+                            <p class="text-xs text-gray-500 bg-gray-800/50 inline-block px-2 py-1 rounded mt-2">Duración: ${duration}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                         <div class="relative">
+                            <select id="quality-selector" class="quality-selector w-full bg-gray-700 border border-gray-600 text-white py-3 px-4 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="192">Calidad Alta (192k)</option>
+                                <option value="128">Calidad Normal (128k)</option>
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                        </div>
+                         <a id="download-link" href="${download_url}" download class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all">
+                            <i class="fas fa-download"></i>Descargar MP3
+                         </a>
+                    </div>
+                     <div class="mt-2">
+                         <button onclick="resetToSearch()" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all text-sm">
+                            <i class="fas fa-search mr-2"></i>Buscar Otro
+                         </button>
+                    </div>
+                `;
+                 resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                 resetFormStateButKeepInput();
+
+                 const downloadLink = document.getElementById('download-link');
+                 const qualitySelector = document.getElementById('quality-selector');
+                 
+                 const urlParams = new URLSearchParams(new URL(download_url, window.location.origin).search);
+                 const usedQuality = urlParams.get('quality') || '192';
+                 if(qualitySelector) qualitySelector.value = usedQuality;
+
+                 qualitySelector.addEventListener('change', () => {
+                     showInfoAndDownload(qualitySelector.value);
+                 });
+
+                 downloadLink.addEventListener('click', () => {
+                    setTimeout(() => {
+                        downloadLink.classList.replace('bg-green-600', 'bg-blue-600');
+                        downloadLink.classList.replace('hover:bg-green-700', 'hover:bg-blue-700');
+                        downloadLink.innerHTML = '<i class="fas fa-check mr-2"></i>¡Listo!';
+                        downloadLink.style.pointerEvents = 'none';
+                    }, 500);
+                 });
+            }
+
+            function resetFormStateButKeepInput(){
+                 submitButton.disabled = false;
+                 buttonText.textContent = 'Buscar';
+                 buttonIcon.className = 'fas fa-search';
+            }
+
+            window.resetToSearch = resetToSearch;
+        });
+    </script>
+</body>
+</html>
