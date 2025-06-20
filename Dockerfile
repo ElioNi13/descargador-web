@@ -11,11 +11,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Actualizar yt-dlp a la última versión disponible para evitar bloqueos
+RUN pip install --no-cache-dir -U yt-dlp
+
 # Copiar el resto de los archivos de la aplicación
 COPY . .
 
-# Exponer el puerto que usará Gunicorn
-EXPOSE 8000
-
-# Comando para arrancar la aplicación
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
+# Comando para arrancar la aplicación. Usará el puerto que Render le asigne.
+CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
