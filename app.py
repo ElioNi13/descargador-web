@@ -17,10 +17,12 @@ YDL_OPTS_BASE = {
     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(id)s.%(ext)s'),
     'noplaylist': True,
     'keepvideo': False,
-    'socket_timeout': 60,
-    # Limpiamos todos los "disfraces" para hacer una petición lo más simple posible,
-    # como último recurso contra los bloqueos.
+    'socket_timeout': 120, # Aumentamos la paciencia
     'rm_cachedir': True,
+    # --- Disfraz Final: Usar cookies del navegador ---
+    # Esto intenta simular una sesión de navegador real. Es el método más potente.
+    # Puede que no funcione en Render si no encuentra un perfil de navegador.
+    'cookies_from_browser': ('chrome',),
 }
 
 @app.route('/')
