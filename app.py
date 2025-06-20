@@ -18,14 +18,14 @@ YDL_OPTS_BASE = {
     'noplaylist': True,
     'keepvideo': False,
     'socket_timeout': 60,
-    # "Disfraz" de navegador
+    'rm_cachedir': True, # Limpiar cookies para cada descarga
+    'force_ipv4': True, # A menudo es menos restringido
+    # --- Disfraz Final: Simular un cliente de TV ---
+    # Esto a veces evita los bloqueos más estrictos de YouTube
+    'youtube_client': 'TV_EMBED',
     'http_headers': {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.5',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
     },
-    'force_ipv4': True,
-    # Limpiar cookies para cada descarga para parecer un visitante nuevo
-    'rm_cachedir': True,
 }
 
 @app.route('/')
