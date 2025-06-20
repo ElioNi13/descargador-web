@@ -17,6 +17,8 @@ YDL_OPTS_BASE = {
     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(id)s.%(ext)s'),
     'noplaylist': True,
     'keepvideo': False,
+    # Aumentar la paciencia (timeout en segundos)
+    'socket_timeout': 60,
     # "Disfraz" mucho más completo para evitar el error 403: Forbidden
     'http_headers': {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
