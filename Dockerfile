@@ -17,5 +17,5 @@ RUN pip install --no-cache-dir -U yt-dlp
 # Copiar el resto de los archivos de la aplicación
 COPY . .
 
-# Comando para arrancar la aplicación. Usará el puerto que Render le asigne.
-CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "app:app"]
+# Comando para arrancar la aplicación. Formato corregido para que Render entienda $PORT
+CMD gunicorn --bind 0.0.0.0:$PORT app:app
