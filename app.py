@@ -28,6 +28,8 @@ YDL_OPTS_BASE = {
     # Estrategia para extraer información del reproductor web si la normal falla
     'youtube_include_dash_manifest': True,
     'youtube_skip_dash_manifest': False,
+    # Simular que la petición viene de un cliente móvil, a veces evita bloqueos
+    'youtube_client': 'android',
 }
 
 @app.route('/')
