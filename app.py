@@ -11,18 +11,16 @@ DOWNLOAD_FOLDER = 'downloads'
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
-# Opciones BASE para yt-dlp.
+# Opciones BASE para yt-dlp (sin cookies_from_browser)
 YDL_OPTS_BASE = {
     'format': 'bestaudio/best',
     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(id)s.%(ext)s'),
     'noplaylist': True,
     'keepvideo': False,
-    'socket_timeout': 120, # Aumentamos la paciencia
+    'socket_timeout': 120,
     'rm_cachedir': True,
-    # --- Disfraz Final: Usar cookies del navegador ---
-    # Esto intenta simular una sesión de navegador real. Es el método más potente.
-    # Puede que no funcione en Render si no encuentra un perfil de navegador.
-    'cookies_from_browser': ('chrome',),
+    # Aquí podrías agregar un archivo de cookies manualmente si lo necesitas
+    # 'cookiefile': 'cookies.txt',
 }
 
 @app.route('/')
@@ -34,7 +32,7 @@ def index():
 def process_video():
     data = request.get_json()
     url = data.get('url')
-    quality = data.get('quality', '192') # Calidad por defecto si no se especifica
+    quality = data.get('quality', '192')
 
     if not url:
         return jsonify({'error': 'URL no proporcionada'}), 400
@@ -44,7 +42,7 @@ def process_video():
         ydl_opts['postprocessors'] = [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
-            'preferredquality': quality, # Usamos la calidad seleccionada
+            'preferredquality': quality,
         }]
 
         with YoutubeDL(ydl_opts) as ydl:
@@ -60,12 +58,12 @@ def process_video():
 
             mp3_filename = f"{video_id}.mp3"
 
-            # --- LÓGICA PARA EL NUEVO NOMBRE DE ARCHIVO ---
+            # Nombre amigable para el archivo
             safe_title = re.sub(r'[\\/*?:"<>|]', "", video_title)
             friendly_filename = f"EasyMP3Downloader - {safe_title}.mp3"
             encoded_filename = quote(friendly_filename)
             download_url_with_name = f"/downloads/{mp3_filename}?filename={encoded_filename}"
-            
+
             return jsonify({
                 'download_url': download_url_with_name,
                 'title': video_title,
@@ -73,8 +71,9 @@ def process_video():
                 'thumbnail': video_thumbnail,
                 'duration': video_duration,
             })
-            
+
     except Exception as e:
+        print(f"[ERROR] {str(e)}")  # Log para diagnóstico
         return jsonify({'error': f"Un error ocurrió: {str(e)}"}), 500
 
 @app.route('/downloads/<path:filename>')
